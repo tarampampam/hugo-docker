@@ -1,5 +1,5 @@
 FROM alpine:latest
-LABEL Description="hugo - static site generator" Vendor="info@hook.sh"
+LABEL Description="hugo - static site generator" Vendor="paramtamtam"
 
 ARG HUGO_VERSION=0.47
 ENV HUGO_VERSION="${HUGO_VERSION}"
