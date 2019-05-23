@@ -1,7 +1,7 @@
 FROM alpine:latest
 LABEL Description="hugo - static site generator" Vendor="paramtamtam"
 
-ARG HUGO_VERSION=0.54.0
+ARG HUGO_VERSION=0.55.6
 ENV HUGO_VERSION="${HUGO_VERSION}"
 
 RUN \
