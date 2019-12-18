@@ -1,13 +1,8 @@
 name: Build non-existing image
 
 on:
-#  schedule: # Always runs on a default branch, docs: <https://git.io/Je5Z7>
-#    - cron: '0 * * * *' # every 1 hour
-  push:
-    branches:
-      - develop
-    tags-ignore:
-      - '**'
+  schedule: # Always runs on a default branch, docs: <https://git.io/Je5Z7>
+    - cron: '0 * * * *' # every 1 hour
 
 jobs: # Docs: <https://help.github.com/en/articles/workflow-syntax-for-github-actions>
   build:
