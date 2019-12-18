@@ -16,6 +16,7 @@ jobs: # Docs: <https://help.github.com/en/articles/workflow-syntax-for-github-ac
     env:
       HUB_REPO: 'tarampampam/hugo'
       APP_REPO: 'gohugoio/hugo'
+      APP_MAJOR_VERSION: '0'
     steps:
       - name: Get existing docker tags
         id: docker-tags
@@ -24,11 +25,11 @@ jobs: # Docs: <https://help.github.com/en/articles/workflow-syntax-for-github-ac
             jq -r '."results"[]["name"]' |\
             tr '\n' ' ')"
 
-      - name: Get existing hugo releases (extract git tags)
+      - name: Get existing hugo releases (extract git tags filtered by major version)
         id: app-tags
         run: |
           echo "::set-output name=tags::$(curl -L -s "https://api.github.com/repos/${APP_REPO}/releases" |\
-            jq -r '.[]."tag_name" | sub("^[vV]"; "")' |\
+            jq -r '.[] | select(.tag_name | startswith("v'"${APP_MAJOR_VERSION}"'")) | .tag_name | sub("^v"; "")' |\
             tr '\n' ' ')"
 
       - name: Calculate difference between existing docker tags and releases
