@@ -43,7 +43,7 @@ jobs: # Docs: <https://help.github.com/en/articles/workflow-syntax-for-github-ac
         run: echo "::set-output name=value::$(echo "${{ steps.tags-diff.outputs.diff }}" | head -n 1 | sed "s/[^[:digit:].]//g")"
 
       - name: Log-in into docker registry
-        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login hub.docker.com --username "${{ secrets.DOCKER_LOGIN }}" --password-stdin
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login --username "${{ secrets.DOCKER_LOGIN }}" --password-stdin
 
       - name: Check out code
         uses: actions/checkout@v1
