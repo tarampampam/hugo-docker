@@ -44,6 +44,7 @@ jobs: # Docs: <https://help.github.com/en/articles/workflow-syntax-for-github-ac
         run: echo "::set-output name=value::$(echo "${{ steps.tags-diff.outputs.diff }}" | head -n 1)"
 
       - name: Log-in into docker registry
+        if: startsWith(steps.target-version.outputs.value, env.APP_MAJOR_VERSION)
         run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login --username "${{ secrets.DOCKER_LOGIN }}" --password-stdin &> /dev/null
 
       - name: Check out code
