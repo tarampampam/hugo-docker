@@ -43,6 +43,7 @@ jobs: # Docs: <https://help.github.com/en/articles/workflow-syntax-for-github-ac
       - name: Build docker image
         if: startsWith(steps.target-version.outputs.value, env.APP_MAJOR_VERSION) # Validate major version value
         run: |
+          curl -Ls "https://artii.herokuapp.com/make?text=${{ steps.target-version.outputs.value }}&font=tty" || true
           docker build \
             --build-arg "HUGO_VERSION=${{ steps.target-version.outputs.value }}" \
             --build-arg "BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" \
