@@ -5,7 +5,6 @@ FROM golang:1.13-alpine AS builder
 ARG HUGO_VERSION
 
 ENV \
-    HUGO_VERSION="${HUGO_VERSION}" \
     CGO_ENABLED="1" \
     GOOS="linux" \
     GO111MODULE="on"
@@ -26,11 +25,15 @@ RUN set -x \
 
 FROM alpine:latest
 
+ARG HUGO_VERSION
+ARG BUILD_DATE
+
 LABEL \
     org.label-schema.schema-version="1.0" \
     org.label-schema.name="hugo" \
     org.label-schema.description="The world's fastest framework for building websites" \
     org.label-schema.version="${HUGO_VERSION}" \
+    org.label-schema.build-date="${BUILD_DATE}" \
     org.label-schema.vendor="hugo" \
     org.label-schema.url="https://gohugo.io" \
     org.label-schema.vcs-url="https://github.com/gohugoio/hugo"

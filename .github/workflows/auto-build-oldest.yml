@@ -54,6 +54,7 @@ jobs: # Docs: <https://help.github.com/en/articles/workflow-syntax-for-github-ac
         run: |
           docker build \
             --build-arg "HUGO_VERSION=${{ steps.target-version.outputs.value }}" \
+            --build-arg "BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" \
             --tag "${HUB_REPO}:${{ steps.target-version.outputs.value }}" \
             -f ./Dockerfile .
 
