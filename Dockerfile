@@ -14,16 +14,13 @@ ENV \
 RUN set -x \
     && apk update \
     && apk add --no-cache git gcc g++ musl-dev \
+    && go version \
     && go get github.com/magefile/mage \
-    && go version
-
-RUN set -x \
     && git clone --branch "v${HUGO_VERSION}" --depth 1 --single-branch https://github.com/gohugoio/hugo /tmp/hugo
 
 WORKDIR /tmp/hugo
 
 RUN set -x \
-    && ls -la . \
     && mage hugo \
     && mage install
 
@@ -32,7 +29,7 @@ FROM alpine:latest
 LABEL \
     org.label-schema.schema-version="1.0" \
     org.label-schema.name="hugo" \
-    org.label-schema.description="The world’s fastest framework for building websites" \
+    org.label-schema.description="The world's fastest framework for building websites" \
     org.label-schema.version="${HUGO_VERSION}" \
     org.label-schema.vendor="hugo" \
     org.label-schema.url="https://gohugo.io" \

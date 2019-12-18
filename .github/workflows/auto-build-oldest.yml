@@ -25,7 +25,7 @@ jobs: # Docs: <https://help.github.com/en/articles/workflow-syntax-for-github-ac
             tr '\n' ' ')"
 
       - name: Get existing hugo releases (extract git tags)
-        id: hugo-tags
+        id: app-tags
         run: |
           echo "::set-output name=tags::$(curl -L -s "https://api.github.com/repos/${APP_REPO}/releases" |\
             jq -r '.[]."tag_name"' |\
@@ -35,7 +35,7 @@ jobs: # Docs: <https://help.github.com/en/articles/workflow-syntax-for-github-ac
         id: tags-diff
         run: |
           echo "::set-output name=diff::$(comm -23 \
-            <(echo "${{ steps.hugo-tags.outputs.tags }}" | tr ' ' '\n' | sort) \
+            <(echo "${{ steps.app-tags.outputs.tags }}" | tr ' ' '\n' | sort) \
             <(echo "${{ steps.docker-tags.outputs.tags }}" | tr ' ' '\n' | sort))"
 
       - name: Choise version for building (take oldest available release)
@@ -53,3 +53,6 @@ jobs: # Docs: <https://help.github.com/en/articles/workflow-syntax-for-github-ac
             --build-arg "HUGO_VERSION=${{ steps.target-version.outputs.value }}" \
             --tag "${HUB_REPO}:${{ steps.target-version.outputs.value }}" \
             -f ./Dockerfile .
+
+      - name: Log-in into docker registry
+        run: echo ${{ secrets.DOCKER_PASSWORD }} | docker login hub.docker.com -u ${{ secrets.DOCKER_LOGIN }} --password-stdin
