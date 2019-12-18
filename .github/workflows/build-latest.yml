@@ -47,9 +47,9 @@ jobs: # Docs: <https://help.github.com/en/articles/workflow-syntax-for-github-ac
           docker build \
             --build-arg "HUGO_VERSION=${{ steps.target-version.outputs.value }}" \
             --build-arg "BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" \
-            --tag "${HUB_REPO}:${{ steps.target-version.outputs.value }}" \
+            --tag "${HUB_REPO}:latest" \
             -f ./Dockerfile .
 
       - name: Push docker image into registry
         if: startsWith(steps.target-version.outputs.value, env.APP_MAJOR_VERSION) # Validate major version value
-        run: docker push "${HUB_REPO}:${{ steps.target-version.outputs.value }}"
+        run: docker push "${HUB_REPO}:latest"
