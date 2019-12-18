@@ -31,7 +31,7 @@ ARG BUILD_DATE
 LABEL \
     org.label-schema.schema-version="1.0" \
     org.label-schema.name="hugo" \
-    org.label-schema.description="The world's fastest framework for building websites" \
+    org.label-schema.description="The world's fastest framework for building static websites" \
     org.label-schema.version="${HUGO_VERSION}" \
     org.label-schema.build-date="${BUILD_DATE}" \
     org.label-schema.vendor="hugo" \
