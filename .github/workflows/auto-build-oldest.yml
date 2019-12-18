@@ -20,23 +20,23 @@ jobs: # Docs: <https://help.github.com/en/articles/workflow-syntax-for-github-ac
       - name: Get existing docker tags
         id: docker-tags
         run: |
-          echo "::set-output name=tags::$(curl -L -s "https://registry.hub.docker.com/v2/repositories/${HUB_REPO}/tags?page_size=1024" |\
+          echo ::set-output name=tags::$(curl -L -s "https://registry.hub.docker.com/v2/repositories/${HUB_REPO}/tags?page_size=1024" |\
             jq -r '."results"[]["name"]' |\
-            tr '\n' ' ')"
+            tr '\n' ' ')
 
       - name: Get existing hugo releases (extract git tags)
         id: app-tags
         run: |
-          echo "::set-output name=tags::$(curl -L -s "https://api.github.com/repos/${APP_REPO}/releases" |\
-            jq -r '.[]."tag_name"' |\
-            tr '\n' ' ')"
+          echo ::set-output name=tags::$(curl -L -s "https://api.github.com/repos/${APP_REPO}/releases" |\
+            jq -r '.[]."tag_name" | sub("^[vV]"; "")' |\
+            tr '\n' ' ')
 
       - name: Calculate difference between existing docker tags and releases
         id: tags-diff
         run: |
-          echo "::set-output name=diff::$(comm -23 \
+          echo ::set-output name=diff::$(comm -23 \
             <(echo "${{ steps.app-tags.outputs.tags }}" | tr ' ' '\n' | sort) \
-            <(echo "${{ steps.docker-tags.outputs.tags }}" | tr ' ' '\n' | sort))"
+            <(echo "${{ steps.docker-tags.outputs.tags }}" | tr ' ' '\n' | sort))
 
       - name: Choise version for building (take oldest available release)
         id: target-version
