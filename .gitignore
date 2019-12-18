@@ -8,3 +8,4 @@
 # Temp dirs & trash
 .DS_Store
 *.cache
+run.sh
