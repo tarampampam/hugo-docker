@@ -36,14 +36,17 @@ jobs: # Docs: <https://help.github.com/en/articles/workflow-syntax-for-github-ac
             jq -r '.[]."tag_name"' |\
             tr '\n' ' ')"
 
-      - name: Calculate difference
+      - name: Calculate difference between existing docker tags and releases
         id: tags-diff
         run: |
           echo "::set-output name=diff::$(comm -23 \
             <(echo "${{ steps.hugo-tags.outputs.tags }}" | tr ' ' '\n' | sort) \
             <(echo "${{ steps.docker-tags.outputs.tags }}" | tr ' ' '\n' | sort))"
 
+      - name: Choise version for building (take oldest available release)
+        id: target-version
+        run: echo "::set-output name=target::$(echo "${{ steps.tags-diff.outputs.diff }}" | head -n 1 | sed "s/[^[:digit:].]//g")"
+
       - name: Echo diff
         run: |
-          echo ${{ steps.hugo-tags.outputs.tags }}
-          echo ${{ steps.tags-diff.outputs.diff }}
+          echo ${{ steps.target-version.outputs.target }}
