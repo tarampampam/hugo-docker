@@ -1,4 +1,4 @@
-name: Auto build
+name: Auto-build oldest release
 
 on:
   #schedule:
@@ -17,11 +17,6 @@ jobs: # Docs: <https://help.github.com/en/articles/workflow-syntax-for-github-ac
       HUB_REPO: 'tarampampam/hugo'
       APP_REPO: 'gohugoio/hugo'
     steps:
-      - name: Check out code
-        uses: actions/checkout@v1
-        with:
-          fetch-depth: 1
-
       - name: Get existing docker tags
         id: docker-tags
         run: |
@@ -45,8 +40,16 @@ jobs: # Docs: <https://help.github.com/en/articles/workflow-syntax-for-github-ac
 
       - name: Choise version for building (take oldest available release)
         id: target-version
-        run: echo "::set-output name=target::$(echo "${{ steps.tags-diff.outputs.diff }}" | head -n 1 | sed "s/[^[:digit:].]//g")"
+        run: echo "::set-output name=value::$(echo "${{ steps.tags-diff.outputs.diff }}" | head -n 1 | sed "s/[^[:digit:].]//g")"
 
-      - name: Echo diff
+      - name: Check out code
+        uses: actions/checkout@v1
+        with:
+          fetch-depth: 1
+
+      - name: Build docker image
         run: |
-          echo ${{ steps.target-version.outputs.target }}
+          docker build \
+            --build-arg "HUGO_VERSION=${{ steps.target-version.outputs.value }}" \
+            --tag "${HUB_REPO}:${{ steps.target-version.outputs.value }}" \
+            -f ./Dockerfile .
