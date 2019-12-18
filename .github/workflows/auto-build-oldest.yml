@@ -44,7 +44,6 @@ jobs: # Docs: <https://help.github.com/en/articles/workflow-syntax-for-github-ac
         run: echo "::set-output name=value::$(echo "${{ steps.tags-diff.outputs.diff }}" | head -n 1)"
 
       - name: Log-in into docker registry
-        if: startsWith(steps.target-version.outputs.value, env.APP_MAJOR_VERSION)
         run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login --username "${{ secrets.DOCKER_LOGIN }}" --password-stdin &> /dev/null
 
       - name: Check out code
@@ -53,6 +52,7 @@ jobs: # Docs: <https://help.github.com/en/articles/workflow-syntax-for-github-ac
           fetch-depth: 1
 
       - name: Build docker image
+        if: startsWith(steps.target-version.outputs.value, env.APP_MAJOR_VERSION) # Validate version major value
         run: |
           docker build \
             --build-arg "HUGO_VERSION=${{ steps.target-version.outputs.value }}" \
@@ -61,4 +61,5 @@ jobs: # Docs: <https://help.github.com/en/articles/workflow-syntax-for-github-ac
             -f ./Dockerfile .
 
       - name: Push docker image into registry
+        if: startsWith(steps.target-version.outputs.value, env.APP_MAJOR_VERSION) # Validate version major value
         run: docker push "${HUB_REPO}:${{ steps.target-version.outputs.value }}"
