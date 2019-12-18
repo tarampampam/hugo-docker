@@ -28,11 +28,18 @@ jobs: # Docs: <https://help.github.com/en/articles/workflow-syntax-for-github-ac
 
       - name: Get existing hugo releases (git tags)
         id: hugo-tags
-        run: echo "::set-output name=tags::$(curl -L -s 'https://api.github.com/repos/gohugoio/hugo/tags' | jq -r '.[]."name"' | tr '\n' ' ')"
+        run: |
+          echo "::set-output name=tags::$(curl -L -s 'https://api.github.com/repos/gohugoio/hugo/tags' |\
+            jq -r '.[]."name"' |\
+            tr '\n' ' ')"
 
       - name: Calculate difference
         id: tags-diff
-        run: echo "::set-output name=diff::$(comm -23 <(echo "${{ steps.hugo-tags.outputs.tags }}" | tr ' ' '\n' | sort) <(echo "${{ steps.docker-tags.outputs.tags }}" | tr ' ' '\n' | sort))"
+        run: |
+          echo "::set-output name=diff::$(comm -23 \
+            <(echo "${{ steps.hugo-tags.outputs.tags }}" | tr ' ' '\n' | sort) \
+            <(echo "${{ steps.docker-tags.outputs.tags }}" |\
+            tr ' ' '\n' | sort))"
 
       - name: Echo diff
         run: |
