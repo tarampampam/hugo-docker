@@ -13,6 +13,9 @@ jobs: # Docs: <https://help.github.com/en/articles/workflow-syntax-for-github-ac
   build:
     name: Build docker image
     runs-on: ubuntu-latest
+    env:
+      HUB_REPO: 'tarampampam/hugo'
+      APP_REPO: 'gohugoio/hugo'
     steps:
       - name: Check out code
         uses: actions/checkout@v1
@@ -22,14 +25,14 @@ jobs: # Docs: <https://help.github.com/en/articles/workflow-syntax-for-github-ac
       - name: Get existing docker tags
         id: docker-tags
         run: |
-          echo "::set-output name=tags::$(curl -L -s 'https://registry.hub.docker.com/v2/repositories/tarampampam/hugo/tags?page_size=1024' |\
+          echo "::set-output name=tags::$(curl -L -s "https://registry.hub.docker.com/v2/repositories/${HUB_REPO}/tags?page_size=1024" |\
             jq -r '."results"[]["name"]' |\
             tr '\n' ' ')"
 
       - name: Get existing hugo releases (git tags)
         id: hugo-tags
         run: |
-          echo "::set-output name=tags::$(curl -L -s 'https://api.github.com/repos/gohugoio/hugo/tags' |\
+          echo "::set-output name=tags::$(curl -L -s "https://api.github.com/repos/${APP_REPO}/tags" |\
             jq -r '.[]."name"' |\
             tr '\n' ' ')"
 
