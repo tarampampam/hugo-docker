@@ -1,8 +1,13 @@
-name: Auto-build non-existing image
+name: Build latest image
 
 on:
-  schedule: # Always runs on a default branch, docs: <https://git.io/Je5Z7>
-    - cron: '0 * * * *' # every 1 hour
+#  schedule: # Always runs on a default branch, docs: <https://git.io/Je5Z7>
+#    - cron: '0 * * * *' # every 1 hour
+  push:
+    branches:
+      - develop
+    tags-ignore:
+      - '**'
 
 jobs: # Docs: <https://help.github.com/en/articles/workflow-syntax-for-github-actions>
   build:
@@ -13,30 +18,17 @@ jobs: # Docs: <https://help.github.com/en/articles/workflow-syntax-for-github-ac
       APP_REPO: 'gohugoio/hugo'
       APP_MAJOR_VERSION: '0'
     steps:
-      - name: Get existing docker tags
-        id: docker-tags
-        run: |
-          echo "::set-output name=tags::$(curl -L -s "https://registry.hub.docker.com/v2/repositories/${HUB_REPO}/tags?page_size=1024" |\
-            jq -r '."results"[]["name"] | sub("^v"; "")' |\
-            tr '\n' ' ')"
-
       - name: Get existing hugo releases (extract git tags filtered by major version)
         id: app-tags
         run: |
           echo "::set-output name=tags::$(curl -L -s "https://api.github.com/repos/${APP_REPO}/releases" |\
             jq -r '.[] | select(.tag_name | startswith("v'"${APP_MAJOR_VERSION}"'")) | .tag_name | sub("^v"; "")' |\
-            tr '\n' ' ')"
+            tr '\n' ' ' |\
+            sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"
 
-      - name: Calculate difference between existing docker tags and releases
-        id: tags-diff
-        run: |
-          echo "::set-output name=diff::$(comm -23 \
-            <(echo "${{ steps.app-tags.outputs.tags }}" | tr ' ' '\n' | sort) \
-            <(echo "${{ steps.docker-tags.outputs.tags }}" | tr ' ' '\n' | sort))"
-
-      - name: Choise version for building (take oldest available release)
+      - name: Choise version for building (take newest available release)
         id: target-version
-        run: echo "::set-output name=value::$(echo "${{ steps.tags-diff.outputs.diff }}" | head -n 1)"
+        run: echo "::set-output name=value::$(echo "${{ steps.app-tags.outputs.tags }}" | tr ' ' '\n' | sort -V -r | head -n 1)"
 
       - name: Log-in into docker registry
         if: startsWith(steps.target-version.outputs.value, env.APP_MAJOR_VERSION) # Validate major version value
