@@ -22,15 +22,19 @@ jobs: # Docs: <https://help.github.com/en/articles/workflow-syntax-for-github-ac
         id: docker-tags
         run: |
           echo "::set-output name=tags::$(curl -L -s "https://registry.hub.docker.com/v2/repositories/${HUB_REPO}/tags?page_size=1024" |\
-            jq -r '."results"[]["name"]' |\
+            jq -r '."results"[]["name"] | sub("^v"; "")' |\
             tr '\n' ' ')"
 
       - name: Get existing hugo releases (extract git tags filtered by major version)
         id: app-tags
         run: |
-          echo "::set-output name=tags::$(curl -L -s "https://api.github.com/repos/${APP_REPO}/releases" |\
-            jq -r '.[] | select(.tag_name | startswith("v'"${APP_MAJOR_VERSION}"'")) | .tag_name | sub("^v"; "")' |\
+          echo "::set-output name=tags::$(curl -L -s "https://registry.hub.docker.com/v2/repositories/${HUB_REPO}/tags?page_size=1024" |\
+            jq -r '."results"[]["name"]' |\
             tr '\n' ' ')"
+#        run: |
+#          echo "::set-output name=tags::$(curl -L -s "https://api.github.com/repos/${APP_REPO}/releases" |\
+#            jq -r '.[] | select(.tag_name | startswith("v'"${APP_MAJOR_VERSION}"'")) | .tag_name | sub("^v"; "")' |\
+#            tr '\n' ' ')"
 
       - name: Calculate difference between existing docker tags and releases
         id: tags-diff
@@ -44,17 +48,17 @@ jobs: # Docs: <https://help.github.com/en/articles/workflow-syntax-for-github-ac
         run: echo "::set-output name=value::$(echo "${{ steps.tags-diff.outputs.diff }}" | head -n 1)"
 
       - name: Log-in into docker registry
-        if: startsWith(steps.target-version.outputs.value, env.APP_MAJOR_VERSION) # Validate version major value
+        if: startsWith(steps.target-version.outputs.value, env.APP_MAJOR_VERSION) # Validate major version value
         run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login --username "${{ secrets.DOCKER_LOGIN }}" --password-stdin &> /dev/null
 
       - name: Check out code
-        if: startsWith(steps.target-version.outputs.value, env.APP_MAJOR_VERSION) # Validate version major value
+        if: startsWith(steps.target-version.outputs.value, env.APP_MAJOR_VERSION) # Validate major version value
         uses: actions/checkout@v1
         with:
           fetch-depth: 1
 
       - name: Build docker image
-        if: startsWith(steps.target-version.outputs.value, env.APP_MAJOR_VERSION) # Validate version major value
+        if: startsWith(steps.target-version.outputs.value, env.APP_MAJOR_VERSION) # Validate major version value
         run: |
           docker build \
             --build-arg "HUGO_VERSION=${{ steps.target-version.outputs.value }}" \
@@ -63,5 +67,5 @@ jobs: # Docs: <https://help.github.com/en/articles/workflow-syntax-for-github-ac
             -f ./Dockerfile .
 
       - name: Push docker image into registry
-        if: startsWith(steps.target-version.outputs.value, env.APP_MAJOR_VERSION) # Validate version major value
+        if: startsWith(steps.target-version.outputs.value, env.APP_MAJOR_VERSION) # Validate major version value
         run: docker push "${HUB_REPO}:${{ steps.target-version.outputs.value }}"
