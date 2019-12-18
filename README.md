@@ -53,7 +53,7 @@ MIT. Use anywhere for your pleasure.
 
 [badge_build]:https://img.shields.io/docker/build/tarampampam/hugo.svg?style=flat&maxAge=30
 [badge_pulls]:https://img.shields.io/docker/pulls/tarampampam/hugo.svg?style=flat&maxAge=30
-[badge_size]:https://img.shields.io/microbadger/image-size/tarampampam/hugo-docker?style=flat
+[badge_size]:https://img.shields.io/microbadger/image-size/tarampampam/hugo?style=flat
 [badge_license]:https://img.shields.io/github/license/tarampampam/hugo-docker.svg?style=flat&maxAge=30
 [badge_issues]:https://img.shields.io/github/issues/tarampampam/hugo-docker.svg?style=flat&maxAge=30
 [link_build]:https://hub.docker.com/r/tarampampam/hugo/builds/
