@@ -33,7 +33,7 @@ jobs: # Docs: <https://help.github.com/en/articles/workflow-syntax-for-github-ac
 
       - name: Check out code
         if: startsWith(steps.info.outputs.target, env.APP_MAJOR_VERSION) # Validate major version value
-        uses: actions/checkout@v1
+        uses: actions/checkout@v2
         with:
           fetch-depth: 1
 
