@@ -34,6 +34,7 @@ jobs: # Docs: <https://help.github.com/en/articles/workflow-syntax-for-github-ac
             jq -r '.[] | select(.tag_name | startswith("v'"${APP_MAJOR_VERSION}"'")) | .tag_name | sub("^v"; "")' |\
             tr '\n' ' ' |\
             sed -e 's/[[:space:]]*$//')
+          git_tags="$docker_tags"
           diff=$(comm -23 <(echo "$git_tags" | tr ' ' '\n' | sort) <(echo "$docker_tags" | tr ' ' '\n' | sort) |\
             tr '\n' ' '|\
             sed -e 's/[[:space:]]*$//')
