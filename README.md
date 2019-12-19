@@ -28,7 +28,7 @@ And then you can:
 
 ```bash
 $ docker run --rm tarampampam/hugo:latest version
-  Hugo Static Site Generator v0.61.0 linux/amd64
+  Hugo Static Site Generator v0.61.0-9B445B9 linux/amd64 BuildDate: 2019-12-19T07:23:15Z
 ```
 
 Or start live server:
