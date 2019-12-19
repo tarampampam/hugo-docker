@@ -35,11 +35,13 @@ jobs: # Docs: <https://help.github.com/en/articles/workflow-syntax-for-github-ac
 
       - name: Build docker image
         if: startsWith(steps.info.outputs.target, env.APP_MAJOR_VERSION)
+        env:
+          TARGET_IMAGE: "${{ env.HUB_REPO }}:latest"
         run: |
           echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_LOGIN }}" --password-stdin &> /dev/null
           docker build \
             --build-arg "HUGO_VERSION=${{ steps.info.outputs.target }}" \
             --build-arg "BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" \
-            --tag "${HUB_REPO}:latest" \
+            --tag "${TARGET_IMAGE}" \
             -f ./Dockerfile .
-          docker push "${HUB_REPO}:latest"
+          docker push "${TARGET_IMAGE}"
