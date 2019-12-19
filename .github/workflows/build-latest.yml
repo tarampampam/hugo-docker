@@ -21,8 +21,7 @@ jobs: # Docs: <https://help.github.com/en/articles/workflow-syntax-for-github-ac
         run: |
           git_tags=$(curl -L -s "https://api.github.com/repos/${APP_REPO}/releases" |\
             jq -r '.[] | select(.tag_name | startswith("v'"${APP_MAJOR_VERSION}"'")) | .tag_name | sub("^v"; "")' |\
-            tr '\n' ' ' |\
-            sed -e 's/[[:space:]]*$//')
+            tr '\n' ' ' | sed -e 's/[[:space:]]*$//')
           target=$(echo "$git_tags" | tr ' ' '\n' | sort -V -r | head -n 1)
           echo -e "App git tags:\t${git_tags}\nTarget version:\t${target}"
           echo "::set-output name=target::$target"
@@ -41,7 +40,7 @@ jobs: # Docs: <https://help.github.com/en/articles/workflow-syntax-for-github-ac
           echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_LOGIN }}" --password-stdin &> /dev/null
           docker build \
             --build-arg "HUGO_VERSION=${{ steps.info.outputs.target }}" \
-            --build-arg "BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" \
+            --build-arg "BUILD_DATE=UNSET" \
             --tag "${TARGET_IMAGE}" \
             -f ./Dockerfile .
           docker push "${TARGET_IMAGE}"
