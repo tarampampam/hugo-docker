@@ -16,7 +16,7 @@ jobs: # Docs: <https://help.github.com/en/articles/workflow-syntax-for-github-ac
       APP_REPO: 'gohugoio/hugo'
       APP_MAJOR_VERSION: '0.'
     steps:
-      - name: Get tags info (docker hub and git releases)
+      - name: Get tags info and set target version
         id: info
         run: |
           docker_tags=$(curl -L -s "https://registry.hub.docker.com/v2/repositories/${HUB_REPO}/tags?page_size=1024" |\

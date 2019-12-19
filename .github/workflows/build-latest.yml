@@ -4,10 +4,8 @@ on:
   schedule: # Always runs on a default branch, docs: <https://git.io/Je5Z7>
     - cron: '0 0 * * *' # every 1 day
   push:
-    branches:
-      - develop # change branch name if you want
-    tags-ignore:
-      - '**'
+    branches: [develop] # change branch name if you want
+    tags-ignore: ['**']
 
 jobs: # Docs: <https://help.github.com/en/articles/workflow-syntax-for-github-actions>
   build:
@@ -16,39 +14,32 @@ jobs: # Docs: <https://help.github.com/en/articles/workflow-syntax-for-github-ac
     env:
       HUB_REPO: 'tarampampam/hugo'
       APP_REPO: 'gohugoio/hugo'
-      APP_MAJOR_VERSION: '0'
+      APP_MAJOR_VERSION: '0.'
     steps:
-      - name: Get existing hugo releases (extract git tags filtered by major version)
-        id: app-tags
+      - name: Get releases info
+        id: info
         run: |
-          echo "::set-output name=tags::$(curl -L -s "https://api.github.com/repos/${APP_REPO}/releases" |\
+          git_tags=$(curl -L -s "https://api.github.com/repos/${APP_REPO}/releases" |\
             jq -r '.[] | select(.tag_name | startswith("v'"${APP_MAJOR_VERSION}"'")) | .tag_name | sub("^v"; "")' |\
             tr '\n' ' ' |\
-            sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"
-
-      - name: Choise version for building (take newest available release)
-        id: target-version
-        run: echo "::set-output name=value::$(echo "${{ steps.app-tags.outputs.tags }}" | tr ' ' '\n' | sort -V -r | head -n 1)"
-
-      - name: Log-in into docker registry
-        if: startsWith(steps.target-version.outputs.value, env.APP_MAJOR_VERSION) # Validate major version value
-        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login --username "${{ secrets.DOCKER_LOGIN }}" --password-stdin &> /dev/null
+            sed -e 's/[[:space:]]*$//')
+          target=$(echo "$git_tags" | tr ' ' '\n' | sort -V -r | head -n 1)
+          echo -e "App git tags:\t${git_tags}\nTarget version:\t${target}"
+          echo "::set-output name=target::$target"
 
       - name: Check out code
-        if: startsWith(steps.target-version.outputs.value, env.APP_MAJOR_VERSION) # Validate major version value
+        if: startsWith(steps.info.outputs.target, env.APP_MAJOR_VERSION) # Validate major version value
         uses: actions/checkout@v1
         with:
           fetch-depth: 1
 
       - name: Build docker image
-        if: startsWith(steps.target-version.outputs.value, env.APP_MAJOR_VERSION) # Validate major version value
+        if: startsWith(steps.info.outputs.target, env.APP_MAJOR_VERSION)
         run: |
+          echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_LOGIN }}" --password-stdin &> /dev/null
           docker build \
-            --build-arg "HUGO_VERSION=${{ steps.target-version.outputs.value }}" \
+            --build-arg "HUGO_VERSION=${{ steps.info.outputs.target }}" \
             --build-arg "BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" \
             --tag "${HUB_REPO}:latest" \
             -f ./Dockerfile .
-
-      - name: Push docker image into registry
-        if: startsWith(steps.target-version.outputs.value, env.APP_MAJOR_VERSION) # Validate major version value
-        run: docker push "${HUB_REPO}:latest"
+          docker push "${HUB_REPO}:latest"
