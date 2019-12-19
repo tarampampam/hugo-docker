@@ -12,14 +12,14 @@ jobs: # Docs: <https://help.github.com/en/articles/workflow-syntax-for-github-ac
     name: Build docker image
     runs-on: ubuntu-latest
     env:
-      HUB_REPO: 'tarampampam/hugo'
-      APP_REPO: 'gohugoio/hugo'
+      DOCKER_HUB_REPO: 'tarampampam/hugo'
+      HUGO_GITHUB: 'gohugoio/hugo'
       APP_MAJOR_VERSION: '0.'
     steps:
       - name: Get releases info
         id: info
         run: |
-          git_tags=$(curl -L -s "https://api.github.com/repos/${APP_REPO}/releases" |\
+          git_tags=$(curl -L -s "https://api.github.com/repos/${HUGO_GITHUB}/releases" |\
             jq -r '.[] | select(.tag_name | startswith("v'"${APP_MAJOR_VERSION}"'")) | .tag_name | sub("^v"; "")' |\
             tr '\n' ' ' | sed -e 's/[[:space:]]*$//')
           target=$(echo "$git_tags" | tr ' ' '\n' | sort -V -r | head -n 1)
@@ -35,7 +35,7 @@ jobs: # Docs: <https://help.github.com/en/articles/workflow-syntax-for-github-ac
       - name: Build docker image
         if: startsWith(steps.info.outputs.target, env.APP_MAJOR_VERSION)
         env:
-          TARGET_IMAGE: "${{ env.HUB_REPO }}:latest"
+          TARGET_IMAGE: "${{ env.DOCKER_HUB_REPO }}:latest"
         run: |
           echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_LOGIN }}" --password-stdin &> /dev/null
           docker build \

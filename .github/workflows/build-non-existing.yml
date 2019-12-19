@@ -12,17 +12,17 @@ jobs: # Docs: <https://help.github.com/en/articles/workflow-syntax-for-github-ac
     name: Build docker image
     runs-on: ubuntu-latest
     env:
-      HUB_REPO: 'tarampampam/hugo'
-      APP_REPO: 'gohugoio/hugo'
+      DOCKER_HUB_REPO: 'tarampampam/hugo'
+      HUGO_GITHUB: 'gohugoio/hugo'
       APP_MAJOR_VERSION: '0.'
     steps:
       - name: Get tags info and set target version
         id: info
         run: |
-          docker_tags=$(curl -L -s "https://registry.hub.docker.com/v2/repositories/${HUB_REPO}/tags?page_size=1024" |\
+          docker_tags=$(curl -L -s "https://registry.hub.docker.com/v2/repositories/${DOCKER_HUB_REPO}/tags?page_size=1024" |\
             jq -r '."results"[]["name"] | sub("^v"; "")' |\
             tr '\n' ' ' | sed -e 's/[[:space:]]*$//')
-          git_tags=$(curl -L -s "https://api.github.com/repos/${APP_REPO}/releases" |\
+          git_tags=$(curl -L -s "https://api.github.com/repos/${HUGO_GITHUB}/releases" |\
             jq -r '.[] | select(.tag_name | startswith("v'"${APP_MAJOR_VERSION}"'")) | .tag_name | sub("^v"; "")' |\
             tr '\n' ' ' | sed -e 's/[[:space:]]*$//')
           diff=$(comm -23 <(echo "$git_tags" | tr ' ' '\n' | sort) <(echo "$docker_tags" | tr ' ' '\n' | sort) |\
@@ -44,6 +44,6 @@ jobs: # Docs: <https://help.github.com/en/articles/workflow-syntax-for-github-ac
           docker build \
             --build-arg "HUGO_VERSION=${{ steps.info.outputs.target }}" \
             --build-arg "BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" \
-            --tag "${HUB_REPO}:${{ steps.info.outputs.target }}" \
+            --tag "${DOCKER_HUB_REPO}:${{ steps.info.outputs.target }}" \
             -f ./Dockerfile .
-          docker push "${HUB_REPO}:${{ steps.info.outputs.target }}"
+          docker push "${DOCKER_HUB_REPO}:${{ steps.info.outputs.target }}"
