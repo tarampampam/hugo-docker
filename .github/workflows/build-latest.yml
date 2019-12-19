@@ -39,9 +39,11 @@ jobs: # Docs: <https://help.github.com/en/articles/workflow-syntax-for-github-ac
           TARGET_IMAGE: "${{ env.HUB_REPO }}:latest"
         run: |
           echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_LOGIN }}" --password-stdin &> /dev/null
+          docker pull "${TARGET_IMAGE}" || true
           docker build \
             --build-arg "HUGO_VERSION=${{ steps.info.outputs.target }}" \
             --build-arg "BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" \
+            --cache-from "${TARGET_IMAGE}" \
             --tag "${TARGET_IMAGE}" \
             -f ./Dockerfile .
           docker push "${TARGET_IMAGE}"
