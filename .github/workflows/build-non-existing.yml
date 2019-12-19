@@ -4,10 +4,8 @@ on:
   schedule: # Always runs on a default branch, docs: <https://git.io/Je5Z7>
     - cron: '0 * * * *' # every 1 hour
   push:
-    branches:
-      - develop # change branch name if you want
-    tags-ignore:
-      - '**'
+    branches: [develop] # change branch name if you want
+    tags-ignore: ['**']
 
 jobs: # Docs: <https://help.github.com/en/articles/workflow-syntax-for-github-actions>
   build:
@@ -29,7 +27,6 @@ jobs: # Docs: <https://help.github.com/en/articles/workflow-syntax-for-github-ac
             jq -r '.[] | select(.tag_name | startswith("v'"${APP_MAJOR_VERSION}"'")) | .tag_name | sub("^v"; "")' |\
             tr '\n' ' ' |\
             sed -e 's/[[:space:]]*$//')
-          docker_tags="$git_tags"
           diff=$(comm -23 <(echo "$git_tags" | tr ' ' '\n' | sort) <(echo "$docker_tags" | tr ' ' '\n' | sort) |\
             tr '\n' ' '|\
             sed -e 's/[[:space:]]*$//')
