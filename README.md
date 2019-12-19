@@ -48,7 +48,7 @@ All supported image tags [can be found here][link_docker_tags].
 
 #### License
 
-MIT. Use anywhere for your pleasure.
+WTFPL. Use anywhere for your pleasure.
 
 [badge_pulls]:https://img.shields.io/docker/pulls/tarampampam/hugo.svg?style=flat&maxAge=30
 [badge_size]:https://img.shields.io/microbadger/image-size/tarampampam/hugo/latest?style=flat
