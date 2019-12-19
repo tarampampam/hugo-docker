@@ -4,10 +4,9 @@
 
 # Docker image with [hugo][hugo]
 
-[![Build][badge_build]][link_build]
-[![Pulls][badge_pulls]][link_docker_tags]
 [![Build Status][badge_build_latest]][link_actions]
 [![Build Status][badge_build_non_existing]][link_actions]
+[![Pulls][badge_pulls]][link_docker_tags]
 [![License][badge_license]][link_license]
 
 ### What is this?
@@ -51,7 +50,6 @@ All supported image tags [can be found here][link_docker_tags].
 
 MIT. Use anywhere for your pleasure.
 
-[badge_build]:https://img.shields.io/docker/build/tarampampam/hugo.svg?style=flat&maxAge=30
 [badge_pulls]:https://img.shields.io/docker/pulls/tarampampam/hugo.svg?style=flat&maxAge=30
 [badge_size]:https://img.shields.io/microbadger/image-size/tarampampam/hugo/latest?style=flat
 [badge_license]:https://img.shields.io/github/license/tarampampam/hugo-docker.svg?style=flat&maxAge=30
@@ -60,7 +58,6 @@ MIT. Use anywhere for your pleasure.
 [badge_build_non_existing]:https://github.com/tarampampam/hugo-docker/workflows/Build%20non-existing%20image/badge.svg
 [link_actions]:https://github.com/tarampampam/hugo-docker/actions
 
-[link_build]:https://hub.docker.com/r/tarampampam/hugo/builds/
 [link_license]:https://github.com/tarampampam/hugo-docker/blob/master/LICENSE
 [link_docker_tags]:https://hub.docker.com/r/tarampampam/hugo/tags
 [docker_hub]:https://hub.docker.com/r/tarampampam/hugo-docker/
