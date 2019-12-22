@@ -19,7 +19,7 @@ jobs: # Docs: <https://help.github.com/en/articles/workflow-syntax-for-github-ac
         id: info
         run: |
           git_tags=$(curl -L -s "https://api.github.com/repos/${HUGO_GITHUB}/releases" |\
-            jq -r '.[] | select(.tag_name | .tag_name | sub("^v"; "")' |\
+            jq -r '.[] | select(.tag_name) | .tag_name | sub("^v"; "")' |\
             tr '\n' ' ' | sed -e 's/[[:space:]]*$//')
           target=$(echo "$git_tags" | tr ' ' '\n' | sort -V -r | head -n 1)
           echo -e "App git tags:\t${git_tags}\nTarget version:\t${target}"
