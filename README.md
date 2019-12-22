@@ -50,12 +50,12 @@ All supported image tags [can be found here][link_docker_tags].
 
 WTFPL. Use anywhere for your pleasure.
 
-[badge_pulls]:https://img.shields.io/docker/pulls/tarampampam/hugo.svg?style=flat&maxAge=30
-[badge_size]:https://img.shields.io/microbadger/image-size/tarampampam/hugo/latest?style=flat
-[badge_license]:https://img.shields.io/github/license/tarampampam/hugo-docker.svg?style=flat&maxAge=30
+[badge_pulls]:https://img.shields.io/docker/pulls/tarampampam/hugo.svg?style=flat-square&maxAge=30
+[badge_size]:https://img.shields.io/microbadger/image-size/tarampampam/hugo/latest?style=flat-square
+[badge_license]:https://img.shields.io/github/license/tarampampam/hugo-docker.svg?style=flat-square&maxAge=30
 
-[badge_build_latest]:https://github.com/tarampampam/hugo-docker/workflows/Build%20latest%20image/badge.svg
-[badge_build_non_existing]:https://github.com/tarampampam/hugo-docker/workflows/Build%20non-existing%20image/badge.svg
+[badge_build_latest]:https://img.shields.io/github/workflow/status/tarampampam/hugo-docker/Build%20latest%20image.svg?label=latet%20build&logo=github&style=flat-square
+[badge_build_non_existing]:https://img.shields.io/github/workflow/status/tarampampam/hugo-docker/Build%20non-existing%20image.svg?label=new%20releases%20build&logo=github&style=flat-square
 [link_actions]:https://github.com/tarampampam/hugo-docker/actions
 
 [link_license]:https://github.com/tarampampam/hugo-docker/blob/master/LICENSE
