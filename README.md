@@ -44,6 +44,8 @@ And open in your favorite browser [127.0.0.1:1313](http://127.0.0.1:1313/).
 
 ### Supported tags
 
+[![dockeri.co](https://dockeri.co/image/tarampampam/hugo)](https://hub.docker.com/r/tarampampam/hugo)
+
 All supported image tags [can be found here][link_docker_tags].
 
 #### License
