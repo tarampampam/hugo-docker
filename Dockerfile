@@ -42,9 +42,10 @@ COPY --from=builder /go/bin/hugo /usr/bin/hugo
 
 # libc6-compat & libstdc++ are required for extended SASS libraries
 # ca-certificates are required to fetch outside resources (like Twitter oEmbeds)
+# git is required for `enableGitInfo` option
 RUN set -x \
     && apk update \
-    && apk add --no-cache ca-certificates libc6-compat libstdc++ \
+    && apk add --no-cache ca-certificates libc6-compat libstdc++ git \
     && rm -rf /var/cache/apk/* \
     && mkdir /src \
     && hugo version
