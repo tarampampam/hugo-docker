@@ -10,7 +10,7 @@ on:
 jobs: # Docs: <https://help.github.com/en/articles/workflow-syntax-for-github-actions>
   build:
     name: Build docker image
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     env:
       DOCKER_HUB_REPO: 'tarampampam/hugo'
       HUGO_GITHUB: 'gohugoio/hugo'

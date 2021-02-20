@@ -1,4 +1,4 @@
-FROM golang:1.13-alpine AS builder
+FROM golang:1.16-alpine AS builder
 
 # must be passed without any prefix, just clean version number (like `1.2.3` or `4.5`)
 # e.g.: `docker build --build-arg "HUGO_VERSION=0.49.1" .`
