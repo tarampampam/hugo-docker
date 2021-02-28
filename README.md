@@ -1,4 +1,9 @@
 <p align="center">
+    <sub><img src="https://github.githubassets.com/images/icons/emoji/unicode/26a0.png" width="22"></sub> <strong>This repository is abandoned and no longer maintained</strong> <sub><img src="https://github.githubassets.com/images/icons/emoji/unicode/26a0.png" width="22"></sub><br />
+    We suggests using the <a href="https://hub.docker.com/r/klakegg/hugo">hub.docker.com/r/klakegg/hugo</a> image instead<br />
+</p>
+
+<p align="center">
   <img alt="logo" src="https://hsto.org/webt/5e/qm/xf/5eqmxfiuapmg6yxmtvh1dpiaxuy.png" width="128" />
 </p>
 
